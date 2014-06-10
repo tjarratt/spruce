@@ -11,16 +11,18 @@ let okay = "playgrounds are very crashy"
 })()
 
 
-// beginning of Spruce
+/* 
+  beginning of Spruce
+*/
 func runSpecs() {
     for spec in describeBlocks {
         spec()
     }
 }
 
-typealias blocky () -> ()
-var describeBlocks blocky[] = []
-func describe(block: () -> ()) {
+typealias Block = () -> ()
+var describeBlocks: Block[] = []
+func describe(block: Block) {
     describeBlocks.append(block)
 }
 
@@ -28,20 +30,19 @@ func it(block: () -> ()) {
     block()
 }
 
-it(({
-    let whatever = str
-    println(whatever)
-}))
-
-
+/*
+  example usage
+*/
 describe(({
     it(({
-        str = "oh noes"
+        str = "OH YEAH"
     }))
 }))
 
-if str == "oh noes" {
+if str == "OH YEAH" {
     str = "success?"
+} else {
+    str = "failure!!!"
 }
 
 println(str)
