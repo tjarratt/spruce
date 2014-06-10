@@ -16,14 +16,41 @@ let okay = "playgrounds are very crashy"
 */
 func runSpecs() {
     for spec in describeBlocks {
-        spec()
+        spec.it()
+
+        var count = 0
+        for child in spec.children {
+            count++
+            child()
+        }
+
+        var msg = ""
+        if count == 0 {
+            msg = "sadface"
+        }
+        msg
     }
 }
 
+// probably not necessary, had problems with describe declaration otherwise
 typealias Block = () -> ()
-var describeBlocks: Block[] = []
+
+struct DescBlock {
+    var it: Block!
+    var children: Block[] = []
+}
+
+var describeBlocks: DescBlock[] = []
+var currentDescribe: DescBlock?
+
 func describe(block: Block) {
-    describeBlocks.append(block)
+    var emptyChildren: Block[] = []
+    var newDesc = DescBlock(
+        it: block,
+        children: emptyChildren
+    )
+    describeBlocks.append(newDesc)
+    currentDescribe = newDesc
 }
 
 func it(block: () -> ()) {
@@ -33,16 +60,14 @@ func it(block: () -> ()) {
 /*
   example usage
 */
+
+// mySpec.swift
 describe(({
     it(({
         str = "OH YEAH"
     }))
 }))
 
-if str == "OH YEAH" {
-    str = "success?"
-} else {
-    str = "failure!!!"
-}
-
-println(str)
+// main.swift
+runSpecs()
+str // OH YEAH
